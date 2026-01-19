@@ -1,72 +1,66 @@
-const express = require('express');
-const app = express();
-const port = 5000;
-cors = require('cors');
-const { db } = require('./config/firebasedb');
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
+const { db } = require("./config/firebasedb");
+
+const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-
+// Test route
 app.get("/test", (req, res) => {
   res.send("Firebase connected successfully 🚀");
 });
 
+// Email transporter
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'dilshan.personal12@gmail.com',
-      pass: process.env.GMAIL_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
-})
+  service: "gmail",
+  auth: {
+    user: "dilshan.personal12@gmail.com",
+    pass: process.env.GMAIL_PASS,
+  },
+});
 
-app.post('/message', async (req, res) => {
+// API route
+app.post("/message", async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
     if (!name || !email || !subject || !message) {
-      return res.status(400).send({ error: 'All fields are required.' });
+      return res.status(400).json({ error: "All fields are required." });
     }
 
-    await db.collection('messages').add({
+    await db.collection("messages").add({
       name,
       email,
       subject,
       message,
       createdAt: new Date(),
     });
-    
-    const mailOptions = {
-        from: 'Personal Portfolio <dilshan.personal12@gmail.com>',
-        to: 'dilshan.personal12@gmail.com',
-        subject: subject,
-        html :`
-          <h3>New Message from Your Portfolio</h3>
-          <h3>${name}</h3>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong><br/> ${message}</p>
-        `
-    }
-    await transporter.sendMail(mailOptions);
 
-    res.status(200).send({ message: 'Message & Notification sent successfully.' });
+    await transporter.sendMail({
+      from: "Personal Portfolio <dilshan.personal12@gmail.com>",
+      to: "dilshan.personal12@gmail.com",
+      subject,
+      html: `
+        <h3>New Message from Your Portfolio</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong><br/>${message}</p>
+      `,
+    });
 
-
+    res.status(200).json({ message: "Message & notification sent successfully." });
   } catch (error) {
-    console.error(error);
-
-    res.status(500).send({ error: 'Failed to send message.' });
+    console.error("ERROR:", error);
+    res.status(500).json({ error: "Failed to send message." });
   }
 });
 
-
-
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// ❌ DO NOT use app.listen()
+// ✅ Export app for Vercel
+module.exports = app;
