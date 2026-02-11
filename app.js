@@ -36,7 +36,7 @@ app.get("/download_cv", (req, res) => {
       return res.status(500).send("Error reading file.");
     }
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", 'attachment; filename="Dilshan_Madusanka.pdf"');
+    res.setHeader("Content-Disposition", 'attachment; filename="Dilshan_Resume.pdf"');
     res.send(data);
   });
 });
