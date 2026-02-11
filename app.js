@@ -28,7 +28,7 @@ app.get("/test", (req, res) => {
 
 
 app.get("/download_cv", (req, res) => {
-  const filePath = path.join(__dirname, "./files/Dilshan_CV.pdf");
+  const filePath = path.join(__dirname, "./files/Dilshan_Madusanka.pdf");
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
@@ -36,7 +36,7 @@ app.get("/download_cv", (req, res) => {
       return res.status(500).send("Error reading file.");
     }
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", 'attachment; filename="Dilshan_CV.pdf"');
+    res.setHeader("Content-Disposition", 'attachment; filename="Dilshan_Madusanka.pdf"');
     res.send(data);
   });
 });
