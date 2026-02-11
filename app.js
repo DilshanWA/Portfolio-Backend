@@ -28,7 +28,7 @@ app.get("/test", (req, res) => {
 
 
 app.get("/download_cv", (req, res) => {
-  const filePath = path.join(__dirname, "./files/Dilshan_Madusanka.pdf");
+  const filePath = path.join(__dirname, "./files/Dilshan_Resume.pdf");
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
