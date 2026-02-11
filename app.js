@@ -2,18 +2,43 @@ const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+const path = require("path");
+const fs = require("fs");
 
 const { db } = require("./config/firebasedb");
 
 const app = express();
 
-// Middleware
+const corsOptions = {
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true, // optional, only needed if you use cookies
+};
+
+app.use(cors(corsOptions));
 app.use(cors());
+
 app.use(express.json());
 
 // Test route
 app.get("/test", (req, res) => {
   res.send("Firebase connected successfully 🚀");
+});
+
+
+app.get("/download_cv", (req, res) => {
+  const filePath = path.join(__dirname, "./files/Dilshan_CV.pdf");
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return res.status(500).send("Error reading file.");
+    }
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", 'attachment; filename="Dilshan_CV.pdf"');
+    res.send(data);
+  });
 });
 
 // Email transporter
@@ -59,6 +84,10 @@ app.post("/message", async (req, res) => {
     console.error("ERROR:", error);
     res.status(500).json({ error: "Failed to send message." });
   }
+});
+
+app.listen(process.env.PORT || 4000, () => {
+  console.log("Server is running...");
 });
 
 // ❌ DO NOT use app.listen()
