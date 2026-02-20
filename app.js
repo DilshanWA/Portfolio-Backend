@@ -42,11 +42,29 @@ app.get("/download_cv", (req, res) => {
 });
 
 // Email transporter
+/*
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: false, // 👈 ADD THIS
+  },
+}); 
+*/
+
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
+  port: 587,
+  secure: false,
   auth: {
-    user: "dilshan.personal12@gmail.com",
-    pass: process.env.GMAIL_PASS,
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD,
   },
 });
 
@@ -68,11 +86,10 @@ app.post("/message", async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: "Personal Portfolio <dilshan.personal12@gmail.com>",
-      to: "dilshan.personal12@gmail.com",
-      subject,
+      from: `Personal Portfolio <${process.env.GMAIL_USER}>`,
+      to: process.env.GMAIL_USER,
+      subject: `New message from ${name}: ${subject}`,
       html: `
-        <h3>New Message from Your Portfolio</h3>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Message:</strong><br/>${message}</p>
