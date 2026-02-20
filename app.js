@@ -10,7 +10,7 @@ const { db } = require("./config/firebasedb");
 const app = express();
 
 const corsOptions = {
-  origin: "https://www.dilshanthathsara.me/",
+  origin: "https://www.dilshanthathsara.me",
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
   credentials: true, // optional, only needed if you use cookies
