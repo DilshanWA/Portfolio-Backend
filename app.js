@@ -10,7 +10,7 @@ const { db } = require("./config/firebasedb");
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://www.dilshanthathsara.me",
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
   credentials: true, // optional, only needed if you use cookies
@@ -64,7 +64,7 @@ const transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASSWORD,
+    pass: process.env.GMAIL_PASS,
   },
 });
 
